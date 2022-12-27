@@ -75,11 +75,13 @@ python3 secretsdump.py -ntds NTDS -system SYSTEM LOCAL #提取NTDS.DIT中的哈�
 ```
 
 ## 0x11 NTLM Relay
-NTLM Relay攻击能成功的前提是NTLM镶嵌的协议没有开启签名，默认情况下SMB签名只在域控机器上要求，而域内机器不要求。默认情况下LDAP签名通过协商决定，即客户端可控。
+NTLM Relay攻击能成功的前提是NTLM镶嵌的协议没有开启签名。
 
 
 ## 0x12 MS08-068
-在工作组环境中，由于没有域信任这时候拿到NTLM请求去Relay到其它机器并没有作用，除非Relay到的机器密码相同，但是密码相同可以直接PTH了。在工作组环境中可以Relay回机器本身，这就是MS08-068。
+在工作组环境中，由于没有相互信任关系这时候拿到NTLM请求去Relay到其它机器并没有作用，除非Relay到的机器密码相同，但是密码相同可以直接PTH了。在工作组环境中可以Relay回机器本身，这就是MS08-068。微软通过缓存机制限制SMB Reflect SMB，但是CVE-2019-1384绕过了这个限制，且限制了SMB Reflect SMB还可以SMB Reflect LDAP等。
 
 ## 0x13 CVE-2019-1384
 是MS08-068漏洞补丁的一个绕过，补丁是通过缓存进行修补漏洞的，但是缓存在300s之后就会自己清除，利用这个特性可以绕过MS08-068。
+
+## 0x14 

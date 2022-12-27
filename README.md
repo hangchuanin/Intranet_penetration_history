@@ -30,6 +30,8 @@ windows访问控制文档：https://learn.microsoft.com/zh-cn/windows/win32/seca
 
 注意二：普通用户无法通过令牌窃取执行命令，原因是普通用户无法获取到System、Administrator等账户的令牌，账户能获取到多少令牌，取决于令牌的安全描述符和完整性级别是否允许账户对令牌的请求。
 
+注意三：需要先对windows访问控制有一定了解再看令牌窃取，可阅读令牌窃取的实现来理解其原理：https://github.com/FSecureLABS/incognito
+
 ## 0x06 SPN扫描&kerberoast
 SPN官方文档：https://learn.microsoft.com/zh-cn/windows/win32/ad/service-principal-names
 
@@ -40,8 +42,17 @@ SPN官方文档：https://learn.microsoft.com/zh-cn/windows/win32/ad/service-pri
 注意二：kerberos协议认证过程中KRB_TGS_REP消息返回的`KRB_TGS_REP::Ticket::EncryptedData`是使用服务账户（域用户或计算机账户，取决于SPN设置在域用户对象还是计算机对象）哈希加密的，通过爆破该字段获取服务账户哈希。
 
 ## 0x07 黄金票据
-原理：`KRB_AS_REP::Ticket::EncryptedData`是通过域控的krbtgt账户哈希加密的，当我们拥有域控的krbtgt账户哈希时，可以自己制作`KRB_AS_REP::Ticket::EncryptedData`用于后续的身份认证。
+原理：`KRB_AS_REP::Ticket::EncryptedData`是通过域控的krbtgt账户哈希加密的，当我们拥有域控的krbtgt账户哈希时，可以自己制作`KRB_AS_REP::Ticket::EncryptedData`用于后续的身份认证，黄金票据其实指的就是`KRB_AS_REP::Ticket`
 
 注意一：`KRB_AS_REP::Ticket::EncryptedData::EncryptionKey`字段等于`KRB_AS_REP::EncryptedData::EncryptionKey`字段，`KRB_AS_REP::EncryptedData`字段是用客户端哈希进行加密的。在正常的身份认证过程当中客户端使用自己的哈希解密`KRB_AS_REP::EncryptedData`值以获得`KRB_AS_REP::Ticket::EncryptedData::EncryptionKey`值，用于解密后续身份认证过程中产生的`KRB_TGS_REP::EncryptedData`字段，在黄金票据制作中自己伪造一个`EncryptionKey`放进`KRB_AS_REP::Ticket::EncryptedData::EncryptionKey`即可。
 
 注意二：mimikatz工具制作黄金票据需要域SID，这是因为`KRB_AS_REP::Ticket::AuthorizationData`字段是微软设计的PAC，PAC结构里面需要域组SID，而域组SID由域SID+组标识组成，比如域SID+500表示域管组。
+
+## 0x08 白银票据
+原理：kerberos协议认证过程中KRB_TGS_REP消息返回的`KRB_TGS_REP::Ticket::EncryptedData`是使用服务账户（域用户或计算机账户，取决于SPN设置在域用户对象还是计算机对象）哈希加密的，当我们拥有服务账户的哈希之后，可以自己制作`KRB_TGS_REP::Ticket::EncryptedData`用于后续的身份认证，白银票据其实指的就是`KRB_TGS_REP::Ticket`。
+
+注意一：白银票据能利用成功的前提是服务不验证PAC，当服务验证PAC时白银票据是无法利用成功的。
+
+## 0x09 MS14068
+
+

@@ -54,5 +54,9 @@ SPN官方文档：https://learn.microsoft.com/zh-cn/windows/win32/ad/service-pri
 注意一：白银票据能利用成功的前提是服务不验证PAC，当服务验证PAC时白银票据是无法利用成功的。
 
 ## 0x09 MS14068
+PAC结构：https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-pac/21181737-74fd-492c-bfbd-0322993a9061
 
+原理：PAC中的校验和生成如果使用HMAC系列的算法是需要服务账户哈希和krbtgt哈希作为算法的key的，但由于PAC中的服务器校验和与KDC校验和可以使用MD5算法，这就导致没有服务账户哈希和krbtgt账户哈希用户也可以自己制作PAC。
+
+注意一：PAC是放置在`KRB_AS_REP::Ticket::AuthorizationData`字段中的，而`KRB_AS_REP::Ticket`字段是经过krbtgt哈希加密的，我们没有krbtgt哈希，构造出的PAC按理说无法填充到被krbtgt加密的Ticket的AuthorizationData字段中，但是很巧妙可以利用`KRB_TGS_REP`消息的生成的逻辑构造出来。`KRB_TGS_REP::Ticket::EncryptedData`的生成会把`KRB_TGS_REQ::enc-authorization-data`填充进去，`KRB_TGS_REQ::enc-authorization-data`是我们客户端可控的，而`KRB_TGS_REP::Ticket`是用服务账户的哈希进行加密的，所以我们需要把`KRB_TGS_REQ::sname`设置为krbtgt账户，这样我们就可以把构造好的PAC填充到被krbtgt加密的Ticket的AuthorizationData字段中了。
 

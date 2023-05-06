@@ -1,14 +1,22 @@
+学习的一份记录
+
 占坑
+
+涉及比较多的文档内容，一开始看比较抽象并且抓不住重点，可以先搜索引擎上搜索一下文章看一看有什么内容，哪些是重点，了解一些基础知识，再去看官方文档。
 
 # 0x00 kerberos协议
 
 kerberos协议官方文档：https://www.ietf.org/rfc/rfc1510.txt
+
+通过伪协议部分（A. Pseudo-code for protocol processing）理解整个认证过程
 
 # 0x01 ntlm协议
 
 ntlm协议文档：http://davenport.sourceforge.net/ntlm.html
 
 文档翻译项目：https://rootclay.gitbook.io/ntlm/
+
+比较好理解，文档有大量的例子
 
 # 0x02 看两个项目
 
@@ -50,7 +58,7 @@ SPN官方文档：https://learn.microsoft.com/zh-cn/windows/win32/ad/service-pri
 
 （1）SPN扫描是通过LDAP查询活动目录中的域用户对象或计算机对象的servicePrincipalName属性来实现的。
 
-（2）kerberos协议认证过程中KRB_TGS_REP消息返回的`KRB_TGS_REP::Ticket::EncryptedData`是使用服务账户（域用户或计算机账户，取决于SPN设置在域用户对象还是计算机对象）哈希加密的，通过爆破该字段获取服务账户哈希。
+（2）kerberos协议认证过程中KRB_TGS_REP消息返回的`KRB_TGS_REP::Ticket::EncryptedData`结构是使用服务账户（域用户或计算机账户，取决于SPN设置在域用户对象还是计算机对象）哈希加密的，通过爆破该字段获取服务账户哈希。
 
 # 0x08 黄金票据
 
@@ -175,7 +183,7 @@ https://jlajara.gitlab.io/Potatoes_Windows_Privesc
 
 1. 安装 CVE-2021-42287 补丁和 CVE-2021-42278 补丁，在安装了 CVE-2021-42278 补丁之后由普通域用户创建的机器账户的`sAMAccountName`属性需要以`$`结尾
 
-   ![image-20230425221415042](C:\Users\230213\AppData\Roaming\Typora\typora-user-images\image-20230425221415042.png)
+   ![image-20230425221415042](https://github.com/hangchuanin/Intranet_penetration_history/blob/main/images/sAMAccountName%20spoofing.png)
 
 2. 将 Machine Account Quota 设置为0以阻止普通域用户创建机器账户或者修改SeMachineAccountPrivilege特权的权限（从SeMachineAccountPrivilege中删除Authenticated Users并添加Domain Admins或另一组允许的帐户）
 
@@ -206,7 +214,7 @@ https://jlajara.gitlab.io/Potatoes_Windows_Privesc
 
 1. 在 ADCS 和 域控 上安装 [CVE-2022-26923](https://support.microsoft.com/en-us/topic/kb5014754-certificate-based-authentication-changes-on-windows-domain-controllers-ad2c23b0-15d8-4340-a468-4d4f3b188f16) 补丁，补丁通过在证书中添加 对象标识符 (OID) (1.3.6.1.4.1.311.25.2) 进一步对用户进行识别，防止通过`dNSHostName` 属性值进行欺骗。
 
-   ![image-20230426212538073](C:\Users\230213\AppData\Roaming\Typora\typora-user-images\image-20230426212538073.png)
+   ![image-20230426212538073](https://github.com/hangchuanin/Intranet_penetration_history/blob/main/images/CVE-2022-26923.png)
 
 2. 通过将 Machine Account Quota 设置为0或者修改SeMachineAccountPrivilege特权的权限禁止普通域账户创建机器账户来阻断攻击路径，但这会有一定的绕过风险。
 
@@ -239,7 +247,7 @@ https://github.com/hfiref0x/UACME
 6. 删除服务器上新创建的服务
 7. 删除服务器上的 PSEXESVC.exe 文件
 
-（3）PsExec 通信数据包
+（3）[PsExec 通信数据包](https://github.com/hangchuanin/Intranet_penetration_history/blob/main/pcapng/psexec.pcapng)
 
 （4）特征日志
 
@@ -252,7 +260,7 @@ https://github.com/hfiref0x/UACME
 3. 通过 SMB 协议从远程服务器上读取命令执行结果
 4. 删除保存命令结果的文件
 
-（7）AtExec 通信数据包
+（7）[AtExec 通信数据包](https://github.com/hangchuanin/Intranet_penetration_history/blob/main/pcapng/atexec.pcapng)
 
 （8）特征日志
 
@@ -265,7 +273,7 @@ https://github.com/hfiref0x/UACME
 3. 通过 SMB 协议读取 `C$\__output` 文件获取命令执行结果
 4. 删除 `C$\__output` 文件
 
-（11）SmbExec 通信数据包
+（11）[SmbExec 通信数据包](https://github.com/hangchuanin/Intranet_penetration_history/blob/main/pcapng/smbexec.pcapng)
 
 （12）特征日志
 
@@ -278,7 +286,7 @@ https://github.com/hfiref0x/UACME
 3. 通过 SMB 服务读取文件内容获取命令执行结果
 4. 删除文件
 
-（15）DcomExec 通信数据包
+（15）[DcomExec 通信数据包](https://github.com/hangchuanin/Intranet_penetration_history/blob/main/pcapng/dcomexec.pcapng)
 
 （16）特征日志
 
@@ -291,7 +299,7 @@ https://github.com/hfiref0x/UACME
 3. 通过 SMB 服务读取文件内容获取命令执行结果
 4. 删除保存命令结果的文件
 
-（19）WmiExec 通信数据包
+（19）[WmiExec 通信数据包](https://github.com/hangchuanin/Intranet_penetration_history/blob/main/pcapng/wmiexec.pcapng)
 
 （20）特征日志
 

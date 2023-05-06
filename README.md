@@ -1,8 +1,11 @@
+[TOC]
+
 学习的一份记录
 
 占坑
 
 涉及比较多的文档内容，一开始看比较抽象并且抓不住重点，可以先搜索引擎上搜索一下文章看一看有什么内容，哪些是重点，了解一些基础知识，再去看官方文档。
+
 
 # 0x00 kerberos协议
 
@@ -175,7 +178,7 @@ https://jlajara.gitlab.io/Potatoes_Windows_Privesc
 
    通过能否成功请求不携带 PAC 的 TGT 票据来判断，在 CVE-2021-42287 漏洞的修复中可以知道它的原理。在安装 CVE-2021-42287 补丁后不允许请求不携带 PAC 的 TGT 票据。
 
-![image-20230425221000787](C:\Users\230213\AppData\Roaming\Typora\typora-user-images\image-20230425221000787.png)
+![image-20230425221000787](https://github.com/hangchuanin/Intranet_penetration_history/blob/main/images/sAMAccountName%20spoofing2.png)
 
 这里的扫描只是判断了是否安装 CVE-2021-42287 补丁而没有判断是否安装 CVE-2021-42278 补丁
 
@@ -308,3 +311,5 @@ https://github.com/hfiref0x/UACME
 https://github.com/api0cradle/UltimateAppLockerByPassList
 
 https://www.anquanke.com/post/id/159892
+
+# 0x22 

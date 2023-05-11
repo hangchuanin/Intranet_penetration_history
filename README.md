@@ -30,7 +30,11 @@
 * [0x19 bypassUAC](#0x19-bypassuac)
 * [0x20 各类exec原理](#0x20-各类exec原理)
 * [0x21 bypassApplocker](#0x21-bypassapplocker)
-* [0x22](#0x22)
+* [0x22 看一些MicroSoft kerberos协议的文档](#0x22-看一些MicroSoft kerberos协议的文档)
+* [0x23 非约束委派](#0x23-非约束委派)
+* [0x24 约束委派](#0x24-约束委派)
+* [0x25 基于资源的约束委派](#0x25-基于资源的约束委派)
+* [0x26 ](#0x26)
 
 
 
@@ -39,6 +43,8 @@
 kerberos协议官方文档：https://www.ietf.org/rfc/rfc1510.txt
 
 通过伪协议部分（A. Pseudo-code for protocol processing）理解整个认证过程
+
+MicroSoft 对 kerberos 的扩展 S4U2：https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-sfu/3bff5864-8135-400e-bdd9-33b552051d94
 
 # 0x01 ntlm协议
 
@@ -339,4 +345,38 @@ https://github.com/api0cradle/UltimateAppLockerByPassList
 
 https://www.anquanke.com/post/id/159892
 
-# 0x22 
+# 0x22 看一些MicroSoft kerberos协议的文档
+
+- [Microsoft Kerberos (Windows)](https://learn.microsoft.com/zh-cn/windows/win32/secauthn/microsoft-kerberos)
+- [[MS-KILE\]： Kerberos 协议扩展](https://learn.microsoft.com/zh-cn/openspecs/windows_protocols/ms-kile/2a32282e-dd48-4ad9-a542-609804b02cc9)
+- [[MS-SFU\]：Kerberos 协议扩展：用户服务和约束委派协议规范](https://learn.microsoft.com/zh-cn/openspecs/windows_protocols/ms-sfu/3bff5864-8135-400e-bdd9-33b552051d94)
+- [Kerberos SSP/AP (Windows)](https://learn.microsoft.com/zh-cn/windows/win32/secauthn/kerberos-ssp-ap)
+- 适用于 Windows Vista 的 [Kerberos 增强功能](https://learn.microsoft.com/zh-cn/previous-versions/windows/it-pro/windows-vista/cc749438(v=ws.10))
+- Windows 7 [的 Kerberos 身份验证更改](https://learn.microsoft.com/zh-cn/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/dd560670(v=ws.10))
+- [Kerberos 身份验证技术参考](https://learn.microsoft.com/zh-cn/previous-versions/windows/it-pro/windows-server-2003/cc739058(v=ws.10))
+
+详细看 用户服务和约束委派协议规范，细节比较多（反复翻阅
+
+# 0x23 非约束委派
+
+关于委派类攻击参考这篇[文章](https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html)，比较全面的
+
+微软在非约束委派的实现上使用的是 **带有转发的票证授予票证 (TGT)的 Kerberos 委派** 机制，流程图在[这里](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-sfu/1fb9caca-449f-4183-8f7a-1a5fc7e7290a)的图一
+
+# 0x24 约束委派
+
+约束委派委派的哪个服务不重要，因为服务在整个 Ticket 结构中位于未加密部分，直接修改即可
+
+S4U2-Self 协议也就是协议转换
+
+# 0x25 基于资源的约束委派
+
+寻找以机器账户发起认证的原语以拼接资源委派攻击链
+
+- [微软不认的“0day”之域内本地提权-烂番茄（Rotten Tomato）](https://mp.weixin.qq.com/s?__biz=MzI2NDk0MTM5MQ==&mid=2247483689&idx=1&sn=1d83538cebbe2197c44b9e5cc9a7997f&chksm=eaa5bb09ddd2321fc6bc838bc5e996add511eb7875faec2a7fde133c13a5f0107e699d47840c&scene=126&sessionid=1584603915&key=cf63f0cc499df801cce7995aeda59fae16a26f18d48f6a138cf60f02d27a89b7cfe0eab764ee36c6208343e0c235450a6bd202bf7520f6368cf361466baf9785a1bcb8f1965ac9359581d1eee9c6c1b6&ascene=1&uin=NTgyNDEzOTc%3D&devicetype=Windows+10&version=62080079&lang=zh_CN&exportkey=A8KlWjR%2F8GBWKaJZTJ2e5Fg%3D&pass_ticket=B2fG6ICJb5vVp1dbPCh3AOMIfoBgH2TXNSxmnLYPig8%3D)
+- NTLM反射添加 msDS-AllowedToActOnBehalfOfOtherIdentity
+
+遇到问题查阅 用户服务和约束委派协议规范，反复翻阅
+
+# 0x26
+

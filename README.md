@@ -30,7 +30,7 @@
 * [0x19 bypassUAC](#0x19-bypassuac)
 * [0x20 各类exec原理](#0x20-各类exec原理)
 * [0x21 bypassApplocker](#0x21-bypassapplocker)
-* [0x22 看一些MicroSoft kerberos协议的文档](#0x22-看一些MicroSoft kerberos协议的文档)
+* [0x22 看一些MicroSoft-kerberos协议的文档](#0x22-看一些MicroSoft kerberos协议的文档)
 * [0x23 非约束委派](#0x23-非约束委派)
 * [0x24 约束委派](#0x24-约束委派)
 * [0x25 基于资源的约束委派](#0x25-基于资源的约束委派)

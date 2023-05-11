@@ -30,7 +30,7 @@
 * [0x19 bypassUAC](#0x19-bypassuac)
 * [0x20 各类exec原理](#0x20-各类exec原理)
 * [0x21 bypassApplocker](#0x21-bypassapplocker)
-* [0x22 看一些MicroSoft-kerberos协议的文档](#0x22-看一些MicroSoft kerberos协议的文档)
+* [0x22 看一些MicroSoft-kerberos协议的文档](#0x22-看一些MicroSoft-kerberos协议的文档)
 * [0x23 非约束委派](#0x23-非约束委派)
 * [0x24 约束委派](#0x24-约束委派)
 * [0x25 基于资源的约束委派](#0x25-基于资源的约束委派)
@@ -345,7 +345,7 @@ https://github.com/api0cradle/UltimateAppLockerByPassList
 
 https://www.anquanke.com/post/id/159892
 
-# 0x22 看一些MicroSoft kerberos协议的文档
+# 0x22 看一些MicroSoft-kerberos协议的文档
 
 - [Microsoft Kerberos (Windows)](https://learn.microsoft.com/zh-cn/windows/win32/secauthn/microsoft-kerberos)
 - [[MS-KILE\]： Kerberos 协议扩展](https://learn.microsoft.com/zh-cn/openspecs/windows_protocols/ms-kile/2a32282e-dd48-4ad9-a542-609804b02cc9)

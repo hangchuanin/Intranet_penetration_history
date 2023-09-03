@@ -1,5 +1,5 @@
 
----
+
 梳理一下体系
 0x01 入口维持
 	1.1 SSH Server wrapper（Linux）
@@ -242,7 +242,6 @@
 	10.4 空会话收集
 	10.5 查看是否开启了LAPS（安装了LAPS在软件列表里有Local Administrator Password Solution标识）
 		（a）权限配置不当导致其它用户查看存储在LDAP中的管理员密码
----
 
 学习的一份记录
 

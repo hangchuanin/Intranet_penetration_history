@@ -1,7 +1,9 @@
 
 
 梳理一下体系
+
 0x01 入口维持
+
 	1.1 SSH Server wrapper（Linux）
 
 	1.2 Tiny SHell（Linux）
@@ -21,9 +23,11 @@
 	1.9 ICMP后门
 
 0x02 脱本机信息
+
 	2.1 翻文件
 
 0x03 代理（需要免杀 优先使用系统自带的命令/自己写代理/魔改过的第三方工具frp/nps） todo
+
 	3.1 reGeorg（webshell代理）
 
 	3.2 pystinger（webshell代理）
@@ -479,7 +483,6 @@
 	10.5 查看是否开启了LAPS（安装了LAPS在软件列表里有Local Administrator Password Solution标识）
 
 		（a）权限配置不当导致其它用户查看存储在LDAP中的管理员密码
-
   
 
 学习的一份记录

@@ -1,4 +1,248 @@
 
+---
+梳理一下体系
+0x01 入口维持
+	1.1 SSH Server wrapper（Linux）
+	1.2 Tiny SHell（Linux）
+	1.3 LD_PRELOAD（Linux）
+	1.4 隐藏型计划任务（Windows）
+	1.5 DLL劫持（Windows）
+	1.6 DoubleAgent（Windows）
+	1.7 bitsadmin（Windows）
+	1.8 DNS后门
+	1.9 ICMP后门
+0x02 脱本机信息
+	2.1 翻文件
+0x03 代理（需要免杀 优先使用系统自带的命令/自己写代理/魔改过的第三方工具frp/nps） todo
+	3.1 reGeorg（webshell代理）
+	3.2 pystinger（webshell代理）
+	3.3 nps
+	3.4 frp
+	3.5 EarthWorm
+	3.6 gost
+	3.7 netsh（只能代理tcp协议、Windows系统自带）
+	3.8 iptables（Linux系统自带）
+	3.9 ssh（Linux系统自带）
+	3.10 mssql
+	3.11 nc（ncat）
+	3.14 firewall（貌似centos自带）
+	3.15 socat
+	3.16 rinetd
+0x04 本机信息收集
+	4.1 翻文件
+		（a）微信目录（下载的文件、历史聊天记录）
+		（b）QQ目录
+		（c）百度云盘目录
+		（d）浏览器下载目录
+		（e）回收站
+		（f）文档目录
+		（g）最近打开文件
+		（h）收藏夹
+		（i）家目录的隐藏文件
+		（j）.bash_history
+		（k）SSH私钥
+	4.2 第三方运维工具凭据
+		（a）xshell
+		（b）xftp
+		（c）navicat
+		（d）mobaxterm
+		（e）向日葵
+		（f）filezilla
+		（g）winscp
+		（h）teamviewer
+	4.3 浏览器（密码、历史、书签）应对杀软/进程占用/抓其它用户下的信息 todo
+	4.4 内存中的信息
+		（a）hash 应对如何在常见杀软下抓hash的手段（wd 数字 卡巴 诺顿）todo
+		（b）票据（域环境）
+		（c）共享（net share）
+		（d）连接（net use）
+		（e）WIFI（获取连接过的WIFI）
+	4.5 可通网段收集
+		（a）arp -a
+		（b）route print
+		（c）rdp对外连接和对内连接、读取4624/4625的日志
+		（d）ipconfig /displaydns（dns缓存）
+		（e）type c:\Windows\system32\drivers\etc\hosts（host文件）
+		（f）net view（显示计算机列表、域列表、计算机共享资源列表）
+		（g）netstat（查看连入IP）
+		（h）DNS域传送
+		（i）cat /etc/hosts
+0x05 外部信息收集
+	5.1 存活探测
+		（a）Netbios
+	5.2 多网卡探测（oxid解析器）
+	5.3 80/443端口探测title
+	5.4 ntlm协议中type2消息（质询）信息收集
+	5.5 spn扫描识别重要服务
+0x06 杂项信息收集
+	6.1 寻找域控
+		（a）扫描ldap(s)端口（389、636）
+		（b）扫描53端口（域控一般也是DNS服务器）88/464/53端口
+		（c）net time /domain（有域用户权限）
+		（d）net group "Domain controllers" /Domain（有域用户权限）
+	6.2 寻找运维
+		（a）rdp连接记录（对内、对外）
+		（b）ssh连接记录（对内、对外）
+		（c）查看在远程机器上正在登录的用户
+			（i）查看远程注册表（PC机器默认不开启远程注册表连接Server机器默认开启、即使配置域用户了不能登录机器A也可以连接机器A远程注册表）
+			（ii）使用NetSessionEnum API（不需要在机器A上有管理员权限）
+			（iii）使用NetWkstaUserEnum API（需要在机器A上有管理员权限）
+	6.3 查找域内某个用户登录过的机器
+		（a）遍历远程机器上正在登录的用户并对比
+		（b）到处域控日志（有域控权限、域用户身份验证的时候机器A没有域用户hash而发送给域控中验证产生日志）
+		（c）outlook邮件头（用户A发邮件的邮件头中有IP）
+	6.4 ldap协议
+		（a）查找设置了委派的服务
+			（i）非约束委派
+			（ii）约束委派
+			（iii）基于资源的约束委派
+		（b）AS-REPRoasting（不要求预身份验证）
+		（c）查看域用户能够登录的机器
+			（i）读取用户对象的userWorkStation属性（当在域用户对象中限制只能登录的机器时会把值反映到userWorkStation属性）
+	6.5 AS_REP爆破域用户名（能和域控通信）
+		（a）AS_REP消息在用户存在和用户不存在时返回包不一样，用于工作组机器能和域控通信但是没有域用户账号的情况。
+	6.6 使用EnuDomainUser枚举域用户（能和域控通信并建立空连接）
+		（a）工作组机器能和域控通信但是没有域用户账号时如果可以和域控建立空连接则可以通过遍历域控的SID来枚举域用户
+0x06 横向移动
+	6.1 WEB服务getshell
+	6.2 SSH服务
+	6.3 RDP服务
+	6.4 MYSQL服务提权
+	6.5 MSSQL服务提权
+	6.6 REDIS服务提权
+	6.7 MS17010
+	6.8 MS14068（域环境PAC可以使用MD5算法校验和生成）
+		（a）PAC如何放到TGT里面（TGT是使用krbtgt哈希加密的）
+	6.9 HASH传递（PTH、PTK）
+		（a）kb2871997
+			（i）此补丁对administrator、本地管理员组的域用户无效
+			（ii）administrator、本地管理员组的域用户获得的令牌是完整令牌，其它用户获得的令牌是不完整的需要过UAC
+			（iii）补丁删除了除wdigest ssp之外的所有ssp明文凭据导致无法抓取到明文密码（可以修改注册表来把wdigest ssp也删除了）
+		（b）PTK绕过kb2871997补丁
+			（i）kb2871997补丁只影响通过rc4 hash传递获得的令牌即只影响PTH
+			（ii）PTK使用aes256 hash传递
+		（c）WinRM
+			（i）受到kb2871997补丁影响，所以某些情况下需要过UAC
+			（ii）可以使用HTTPS.SYS进行端口复用
+	6.10 票据传递（域环境、PTT）
+	6.11 Zerologon（域环境）
+		（a）重置密码
+		（b）利用relay
+	6.12 sAMAccountName spoofing（域环境）
+	6.13 委派（域环境）
+		（a）非约束委派
+		（b）约束委派
+		（c）基于资源的约束委派
+			（i）滥用ms-DS-MachineAccountQuota属性（根据这个属性域用户默认可以添加10个机器账户）
+	6.14 NTLM Relay（域环境）
+		（a）触发目标发起ntlm请求（待补充	）
+			（i）xss
+			（ii）打印机漏洞
+			（iii）LLMNR
+			（iiii）NBNS
+			（iiiii）xxe
+			（iiiiii）ssrf
+		（b）Net-NTLM利用
+			（i）破解Net-NTLM（Net-NTLM v1都能破解成NTLM hash、Net-NTLM v2能不能破解看字典）
+			（ii）relay到smb
+			（iii）relay到Exchange
+			（iiii）relay到ldap
+			（iiii）relay到adcs
+		（c）历史漏洞
+			（i）ms08068（ntlm reflect）
+			（ii）cve-2015-0005（域控泄露签名密钥）
+			（iii）MS16-075
+			（iiii）CVE-2018-8581
+			（iiiii）cve-2019-1040（绕过mic校验）
+			（iiiiii）cve-2019-1384（绕过ms08068的补丁）
+		（d）签名（有点玄乎 后面再研究研究）
+			（i）域内默认只有域控制器开启签名，其它机器都没有开启签名（smb协议）
+			（ii）是否签名由客户端决定，客户端是smb的话默认要求签名，客户端是http/webadv则默认不要求签名（ldap协议）
+	6.15 CVE-2022-26923
+	6.16 k8s
+	6.17 kerberosting（域环境）
+	6.18 水坑攻击
+	6.19 XSS配合谷歌0day
+	6.20 SYSVOL
+	6.20 键盘监听
+0x07 痕迹清除
+0x08 域内权限维持
+	8.1 黄金票据
+		（a）普通黄金票据
+		（b）跨域黄金票据
+	8.2 白银票据
+		（a）针对单个服务
+		（b）如果服务检查PAC则白银票据失效
+	8.3 DSRM后门
+	8.4 委派（约束委派、基于资源的约束委派）
+	8.5 SeEnableDelegationPrivilege特权
+	8.6 AdminSDHolder特权
+0x09 权限提升
+	9.1 第三方服务提权
+		（a）REDIS
+		（b）MYSQL
+		（c）MSSQL
+		（d）postgresql
+		（e）oracle
+	9.2 Windows系统提权
+		（a）内核提权
+		（b）BypassUAC
+			（i）白名单程序的DLL劫持
+			（ii）自动提升权限的COM接口
+			（iii）CVE-2019-1388
+		（c）BypassAppLocker
+		（d）令牌窃取
+			（i）SeImpersonatePrivilege特权
+			（ii）SeAssignPrimaryPrivilege特权
+		（e）土豆系列
+			（i）Hot Potato
+			（ii）Rotten Potato
+			（iii）Juicy Potato
+			（iiii）Rogue Potato
+			（iiiii）Sweet Potato
+			（iiiiii）Local Potato
+		（f）服务配置不当
+			（i）服务路径不带引号
+			（ii）服务的修改权限配置不当
+			（iii）服务执行文件权限配置不当
+		（g）进程注入
+		（h）DLL劫持（DLL加载顺序）
+		（i）用户以NT AUTHORITY\SYSTEM权限安装msi（需要启用AlwaysInstallElevated策略选项，一般都不会开启）
+		（j）注册表权限配置不当
+	9.3 Linux系统提权
+		（a）内核提权
+		（b）SUID提权（可以利用的二进制程序）
+			（i）nmap（有版本限制 [2.02,5.21]）
+			（ii）find
+			（iii）awk
+			（iiii）strace
+			（iiiii）less
+			（iiiiii）more
+			（iiiiiii）nano
+			（iiiiiiii）cp
+			（iiiiiiiii）mv
+			（iiiiiiiiii）vi
+			（iiiiiiiiiii）vim
+			（iiiiiiiiiiii）bash
+		（c）计划任务配置不当
+			（i）高权限计划任务执行的文件权限配置不当
+			（ii）高权限备份计划任务写法不当且备份目录权限配置不当（tar）
+0x10 奇技淫巧
+	10.1 激活guest并把其添加到管理员组来替换添加账号的手法
+	10.2 文件传输
+		（b）wget
+		（d）powershell 核心dll
+		（e）vbs 
+		（f）bitsadmin
+		（g）rsync
+		（h）certutil
+		（i）telnet
+		（j）hta
+	10.3 域用户可修改域内DNS服务器的DNS记录
+	10.4 空会话收集
+	10.5 查看是否开启了LAPS（安装了LAPS在软件列表里有Local Administrator Password Solution标识）
+		（a）权限配置不当导致其它用户查看存储在LDAP中的管理员密码
+---
 
 学习的一份记录
 
